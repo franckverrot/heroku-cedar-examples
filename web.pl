@@ -1,51 +1,24 @@
-#!/usr/bin/perl
-{
-  package MyWebServer;
+#!/usr/bin/perl -w
+use strict;
+use Socket;
+use Carp;
 
-  use HTTP::Server::Simple::CGI;
-  use base qw(HTTP::Server::Simple::CGI);
+my $port = 9292;
+my $proto = getprotobyname('tcp');
+$port = $1 if $port =~ /(\d+)/; # nettoie le numero de port
 
-  my %dispatch = (
-    '/hello' => \&resp_hello,
-    # ...
-  );
-
-  sub handle_request {
-    my $self = shift;
-    my $cgi  = shift;
-
-    my $path = $cgi->path_info();
-    my $handler = $dispatch{$path};
-
-    if (ref($handler) eq "CODE") {
-      print "HTTP/1.0 200 OK\r\n";
-      $handler->($cgi);
-
-    } else {
-      print "HTTP/1.0 404 Not found\r\n";
-      print $cgi->header,
-      $cgi->start_html('Not found'),
-      $cgi->h1('Not found'),
-      $cgi->end_html;
-    }
-  }
-
-  sub resp_hello {
-    my $cgi  = shift;   # CGI.pm object
-    return if !ref $cgi;
-
-    my $who = $cgi->param('name');
-
-    print $cgi->header,
-    $cgi->start_html("Hello"),
-    $cgi->h1("Hello $who!"),
-    $cgi->end_html;
-  }
-
-} 
-
-# start the server on port 8080
-my $pid = MyWebServer->new(8080)->run();
-#->background();
-# print "Use 'kill $pid' to stop server.\n";
+socket(Server, PF_INET, SOCK_STREAM, $proto)        || die "socket: $!";
+setsockopt(Server, SOL_SOCKET, SO_REUSEADDR,
+  pack("l", 1))   || die "setsockopt: $!";
+bind(Server, sockaddr_in($port, INADDR_ANY))        || die "bind: $!";
+listen(Server,SOMAXCONN)                            || die "listen: $!";
+my $paddr;
+$SIG{CHLD} = \&REAPER;
+for ( ; $paddr = accept(Client,Server); close Client) {
+  my($port,$iaddr) = sockaddr_in($paddr);
+  my $name = gethostbyaddr($iaddr,AF_INET);
+  inet_ntoa($iaddr), "]
+  at port $port";
+  print Client "Hello there, $name, it's now ",
+}
 
