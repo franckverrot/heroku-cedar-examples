@@ -3,7 +3,7 @@ use strict;
 use Socket;
 use Carp;
 
-my $port = 9292;
+my $port = int($ENV{'PORT'}) || 9292;
 my $proto = getprotobyname('tcp');
 $port = $1 if $port =~ /(\d+)/; # nettoie le numero de port
 
