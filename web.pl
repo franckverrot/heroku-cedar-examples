@@ -17,8 +17,6 @@ $SIG{CHLD} = \&REAPER;
 for ( ; $paddr = accept(Client,Server); close Client) {
   my($port,$iaddr) = sockaddr_in($paddr);
   my $name = gethostbyaddr($iaddr,AF_INET);
-  inet_ntoa($iaddr), "]
-  at port $port";
   print Client "Hello there, $name, it's now ",
 }
 
