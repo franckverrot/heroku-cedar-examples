@@ -12,3 +12,6 @@ ab -n 1000 -c 100 http://clojure-cedar.herokuapp.com/
 
 # Benchmarking Java
 ab -n 1000 -c 100 http://java-cedar.herokuapp.com/
+
+# Benchmarking Scala
+ab -n 1000 -c 100 http://scala-cedar.herokuapp.com/
